@@ -2,14 +2,14 @@ const express = require("express");
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
-const sequelize = require('./dbConfig')
-
+const db = require('./dbConfig')
+const Book = require('./models/book')
 app.use(express.json());
 app.set('views' , path.join(__dirname , 'views'));
 app.set(`view engine` , 'pug')
-app.use(express.static(__dirname + '/public'));
+app.use('/public', express.static(__dirname + '/public'));
   
-sequelize
+db
   .authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
@@ -25,10 +25,17 @@ sequelize
   })
 
   app.get('/' , (req , res)=>{
-    res.render("all_books")
+      res.redirect('/books')
+  })
+  app.get('/books' , (req , res)=>{
+    Book.findAll().then(data => {
+        res.render("all_books" , {
+            "books" : data
+        })
+    });  
   })
 
-  app.get('/details' , (req , res)=>{
+  app.get('/books/:id' , (req , res)=>{
     res.render("book_detail")
   })
 
