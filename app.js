@@ -118,6 +118,22 @@ db
     }
   })
 
+  app.post('/books/:id/delete' , (req , res)=>{
+    Book
+    .destroy({
+      where: {
+        id : req.params.id
+      }
+    })
+    .then(data=>{
+      res.redirect('/')
+    })
+    .catch(err=>{
+      console.log(err)
+      res.redirect('/')
+
+    })
+  })
   app.get('/*' , (req , res)=>{
     res.render("error")
   })
